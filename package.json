@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "build -windows": "rd /q /s dist && tsc",
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf dist && tsc"
   },
   "author": "",
   "license": "ISC",

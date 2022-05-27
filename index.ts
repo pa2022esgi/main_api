@@ -2,6 +2,7 @@ import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
 import mongoose from "mongoose";
+import {AuthController} from "./controllers";
 
 config();
 
@@ -20,6 +21,8 @@ async function startServer(): Promise<void> {
         res.send("Welcome to api_front !");
     })
 
+    const authController = new AuthController();
+    app.use('/auth', authController.buildRoutes())
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
