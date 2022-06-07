@@ -1,6 +1,9 @@
 import mongoose, {Schema, Document, Model} from "mongoose";
 
 const userTypeSchema = new Schema({
+    _id: {
+        type: Schema.Types.Number,
+    },
     role: {
         type: Schema.Types.String,
         required: true
@@ -12,6 +15,7 @@ const userTypeSchema = new Schema({
 });
 
 export interface UserTypeProps {
+    _id: number;
     role: string;
 }
 

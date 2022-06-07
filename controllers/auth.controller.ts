@@ -1,5 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {checkAuth} from "../middlewares";
+import {checkAuth,checkRegisterType} from "../middlewares";
 import {AuthService} from "../services/auth.service";
 
 export class AuthController {
@@ -11,9 +11,11 @@ export class AuthController {
             const user = await AuthService.getInstance().register({
                 login: body.login,
                 password: body.password,
+                type: body.type,
             });
 
             res.json(user);
+
         } catch(err) {
             console.log(err)
             res.status(400).end();
@@ -48,7 +50,7 @@ export class AuthController {
     buildRoutes(): Router {
         const router = express.Router();
         router.use(express.json())
-        router.post('/register', express.json(), this.register.bind(this));
+        router.post('/register', checkRegisterType(), this.register.bind(this));
         router.post('/login', this.logIn.bind(this));
         router.get('/me', checkAuth(), this.me.bind(this));
         return router;

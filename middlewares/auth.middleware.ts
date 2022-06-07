@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 export function checkAuth(): RequestHandler {
     return async function(req: Request, res, next) {
+        res.header('Access-Control-Allow-Origin','*');
         try {
             const token = AuthUtil.getToken(req.headers.authorization);
 

@@ -3,6 +3,7 @@ import express from 'express';
 import {Request, Response} from "express";
 import mongoose from "mongoose";
 import {AuthController} from "./controllers";
+import {SeedUtil} from "./utils/seed.util";
 
 config();
 
@@ -16,7 +17,17 @@ async function startServer(): Promise<void> {
         }
     });
 
+    await SeedUtil.seed(true,false);
+
     const app = express();
+
+    app.use((req, res, next) => {
+        res.append('Access-Control-Allow-Origin', ['*']);
+        res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        res.append('Access-Control-Allow-Headers', 'Content-Type');
+        next();
+    });
+
     app.get('/', function (req: Request, res: Response) {
         res.send("Welcome to api_front !");
     })
