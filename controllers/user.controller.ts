@@ -18,7 +18,11 @@ export class UserController{
         const reqBody = req.body;
         const user = await this.userService.addOneUser({
             name: reqBody.name,
-            type: reqBody.type
+            type: reqBody.type,
+            password: reqBody.password,
+            login: reqBody.login,
+            address: reqBody.address,
+            phone: reqBody.phone
         });
         res.json(user);
     }
