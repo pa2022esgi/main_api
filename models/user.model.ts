@@ -16,8 +16,8 @@ const UserSchema = new Schema({
         required: true
     },
     type: {
-        type: Schema.Types.Number,
-        ref: "UserType"
+        type: Schema.Types.String,
+        required: true
     },
     address: {
         type: Schema.Types.String
@@ -35,7 +35,7 @@ export interface UserProps{
     login:string;
     password:string;
     name:string;
-    type:UserTypeProps;
+    type:string;
     address:string;
     phone:number;
 }
