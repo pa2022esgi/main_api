@@ -27,12 +27,20 @@ export class UserController{
         res.json(user);
     }
 
+    async deleteOneByLogin(req:Request,res:Response){
+        const reqBody = req.body;
+        console.log(req.body);
+        this.userService.deleteOneByLogin(reqBody.login);
+    }
+
     buildRoutes():Router {
         const router = express.Router();
 
         router.get("/",this.getAllUsers.bind(this));
 
         router.post("/",express.json(),this.addOneUser.bind(this));
+
+        router.delete("/",express.json(),this.deleteOneByLogin.bind(this));
 
         return router;
     }

@@ -17,7 +17,20 @@ async function startServer(): Promise<void> {
         }
     });
 
-    const app = express();
+    var express = require('express')
+    var cors = require('cors')
+    var app = express()
+
+    app.use(cors())
+
+    app.get('/products/:id', function (req:any, res:any, next:any) {
+        res.json({msg: 'This is CORS-enabled for all origins!'})
+    })
+
+    app.listen(80, function () {
+        console.log('CORS-enabled web server listening on port 80')
+    })
+
     app.get('/', function (req: Request, res: Response) {
         res.send("Welcome to api_front !");
     })

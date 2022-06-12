@@ -5,7 +5,7 @@ const UserSchema = new Schema({
     login: {
         type: Schema.Types.String,
         required: true,
-        unique: true
+        //unique: true
     },
     name: {
         type: Schema.Types.String,

@@ -29,4 +29,8 @@ export class UserService{
         });
         return await userModel.save();
     }
+
+    public deleteOneByLogin(login:string):void{
+        UserModel.deleteMany({ login : login });
+    }
 }
