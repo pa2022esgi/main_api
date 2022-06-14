@@ -28,9 +28,17 @@ export class UserController{
     }
 
     async deleteOneByLogin(req:Request,res:Response){
-        const reqBody = req.body;
-        console.log(req.body);
-        this.userService.deleteOneByLogin(reqBody.login);
+        try {
+            const success = await this.userService.deleteById(req.params.id);
+
+            if(success) {
+                res.status(200).send({message : "User successfully deleted"}).end();
+            } else {
+                res.status(404).send({error : "User not found"}).end();
+            }
+        } catch(err) {
+            res.status(400).end();
+        }
     }
 
     buildRoutes():Router {
@@ -40,7 +48,7 @@ export class UserController{
 
         router.post("/",express.json(),this.addOneUser.bind(this));
 
-        router.delete("/",express.json(),this.deleteOneByLogin.bind(this));
+        router.delete("/:id",express.json(),this.deleteOneByLogin.bind(this));
 
         return router;
     }

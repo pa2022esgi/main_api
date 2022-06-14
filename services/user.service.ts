@@ -30,7 +30,8 @@ export class UserService{
         return await userModel.save();
     }
 
-    public deleteOneByLogin(login:string):void{
-        UserModel.deleteMany({ login : login });
+    public async deleteById(id: string): Promise<boolean> {
+        const res = await UserModel.deleteOne({_id: id}).exec();
+        return res.deletedCount === 1;
     }
 }
