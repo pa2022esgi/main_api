@@ -17,8 +17,10 @@ export class AuthService {
     private constructor() { }
 
     public async register(props: Partial<UserProps>): Promise<UserDocument> {
+
         if(!props.password) {
-            throw new Error('Missing parameters');
+            console.log(props.password);
+            throw new Error('Missing parameters test');
         }
 
         const model = new UserModel({
@@ -43,7 +45,7 @@ export class AuthService {
 
         const user = await UserModel.findOne({
             login: props.login,
-            password: AuthUtil.sha512(props.password)
+            password: AuthUtil.sha512(props.password),
         }).exec();
 
         if (!user) {
@@ -55,6 +57,18 @@ export class AuthService {
             username: user.login,
             type: user.type
         }, process.env.SECRET, {expiresIn: '1d'})
+
+        /*const token = jwt.sign({
+            id: user.id,
+            username: user.login,
+            type: user.type
+        }, process.env.SECRET, {expiresIn: '1d'})
+
+        const extracted = AuthUtil.getToken(token)
+
+        const content = jwt.decode(extracted, {complete: false})
+
+        return content;*/
     }
 
     public me(token: string | undefined): string {
