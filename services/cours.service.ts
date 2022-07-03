@@ -1,6 +1,5 @@
 import {CoursDocument, CoursModel, CoursProps} from "../models";
 
-
 export class CoursService {
     private static instance?: CoursService;
 

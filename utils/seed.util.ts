@@ -7,7 +7,6 @@ export class SeedUtil {
             await this.erase();
         }
         await UserTypesSeeder.seed();
-
     }
 
     public static async erase() {

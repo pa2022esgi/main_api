@@ -1,5 +1,4 @@
-import {UserDocument, UserModel, UserProps} from "../models/user.model";
-import {UserTypeProps} from "../models/user-type.model";
+import {UserDocument, UserModel, UserProps} from "../models";
 
 export class UserService{
 
@@ -18,7 +17,7 @@ export class UserService{
         return UserModel.find().exec();
     }
 
-    public async addOneUser(userProps:UserProps):Promise<UserDocument>{
+    public async addOneUser(userProps: Partial<UserProps>):Promise<UserDocument>{
         const userModel = new UserModel({
             name: userProps.name,
             type: userProps.type,

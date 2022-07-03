@@ -5,15 +5,15 @@ export class UserTypesSeeder {
         const types = [
             {
                 id: 1,
-                role: "admin"
+                name: "admin"
             },
             {
                 id: 2,
-                role: "teacher"
+                name: "teacher"
             },
             {
                 id: 3,
-                role: "student"
+                name: "student"
             }
         ];
 
@@ -23,10 +23,10 @@ export class UserTypesSeeder {
             if (!exist) {
                 await new UserTypeModel({
                     _id: type.id,
-                    role: type.role
+                    name: type.name
                 }).save();
             } else {
-                exist.role = type.role
+                exist.name = type.name
                 await exist.save();
             }
         }
