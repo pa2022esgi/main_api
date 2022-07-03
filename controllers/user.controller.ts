@@ -11,18 +11,22 @@ export class UserController{
     }
 
     async addOneUser(req:Request,res:Response){
-        const reqBody = req.body;
+        try {
+            const reqBody = req.body;
 
-        const user = await this.userService.addOneUser({
-            name: reqBody.name,
-            type: reqBody.type,
-            password: reqBody.password,
-            login: reqBody.login,
-            address: reqBody.address,
-            phone: reqBody.phone
-        });
+            const user = await this.userService.addOneUser({
+                name: reqBody.name,
+                type: reqBody.type,
+                password: reqBody.password,
+                login: reqBody.login,
+                address: reqBody.address,
+                phone: reqBody.phone
+            });
 
-        res.json(user);
+            res.json(user);
+        } catch (e) {
+            res.status(400).end();
+        }
     }
 
     async deleteOneByLogin(req:Request,res:Response){
