@@ -1,5 +1,4 @@
 import {Request, RequestHandler} from "express";
-import {UserTypeModel} from "../models";
 
 export function checkRegisterType(): RequestHandler {
     return async function(req: Request, res, next) {
@@ -13,32 +12,30 @@ export function checkRegisterType(): RequestHandler {
             if(!body.login) {
                 error.login = "missing parameter login"
             } else if(!emailRegex.test(body.login)){
-                error.login = "Le format n'est pas correct";
+                error.login = "bad format";
             }
 
             if(!body.password) {
                 error.password = "missing parameter password"
             } else if(!passwordRegex.test(<string>body.password)){
-                error.password = "8 charactères, au moins une maj et un chiffre";
+                error.password = "min 8 characters, 1 uppercase, 1 number";
             }
 
             if(!body.type) {
-                error.type = "missing parameter "
+                error.type = "missing parameter"
             } else {
-
-                const exist = await UserTypeModel.findById(body.type);
-
-                if (exist) {
-                    error.type = 'le type n\'exist pas '
+                if (!["élève", "professeur"].includes(body.type)) {
+                    error.type = "bad format"
                 }
             }
 
             if (Object.keys(error).length !== 0) {
+                console.log(error)
                 res.status(400).send(error).end();
                 return;
             }
-            next();
 
+            next();
         } catch(err) {
             res.status(400).end();
         }
