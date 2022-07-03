@@ -4,11 +4,13 @@ import {Request, Response} from "express";
 import mongoose from "mongoose";
 import {AuthController, CoursController, InfoController} from "./controllers";
 import {SeedUtil} from "./utils/seed.util";
+import {UserController} from "./controllers/user.controller";
 
 config();
 
 async function startServer(): Promise<void> {
     const PORT = process.env.PORT
+    const userController = UserController.getInstance();
 
     await mongoose.connect(process.env.MONGO_URI as string, {
         auth: {
@@ -28,6 +30,10 @@ async function startServer(): Promise<void> {
         next();
     });
 
+    var cors = require('cors')
+    app.listen(80, function () {
+        console.log('CORS-enabled web server listening on port 80')
+    })
     app.get('/', function (req: Request, res: Response) {
         res.send("Welcome to api_front !");
     })
@@ -38,6 +44,7 @@ async function startServer(): Promise<void> {
     app.use('/cours', coursController.buildRoutes());
     const infoController = new InfoController();
     app.use('/info', infoController.buildRoutes());
+    app.use('/users',userController.buildRoutes());
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);

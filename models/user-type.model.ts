@@ -4,11 +4,10 @@ const userTypeSchema = new Schema({
     _id: {
         type: Schema.Types.Number,
     },
-    role: {
+    name: {
         type: Schema.Types.String,
         required: true
     },
-
 }, {
     collection: "user_types",
     versionKey: false
@@ -16,7 +15,7 @@ const userTypeSchema = new Schema({
 
 export interface UserTypeProps {
     _id: number;
-    role: string;
+    name: string;
 }
 
 export type UserTypeDocument = UserTypeProps & Document;
