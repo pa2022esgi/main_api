@@ -1,5 +1,4 @@
 import mongoose, {Schema, Document, Model} from "mongoose";
-import {UserProps} from "./user.model";
 
 const coursSchema = new Schema({
     name: {
@@ -12,8 +11,11 @@ const coursSchema = new Schema({
     },
     user: {
         type: Schema.Types.String,
-        //ref: "User",
-        //required: true
+        required: true
+    },
+    score: {
+        type: Schema.Types.Number,
+        required: true
     },
 }, {
     collection: "cours",
@@ -25,7 +27,8 @@ export interface CoursProps {
     _id: string
     name: string;
     price: number;
-    user?: string;
+    user: string;
+    score: number;
 }
 
 export type CoursDocument = CoursProps & Document;

@@ -5,7 +5,7 @@ import {checkAuth, checkCours,} from "../middlewares";
 export class CoursController {
     async createCours(req: Request, res: Response) {
         const body = req.body;
-        if(!body.name || !body.price || !body.user){
+        if(!body.name || !body.price || !body.user || !body.score){
             res.status(400).end();
             return;
         }
@@ -14,6 +14,7 @@ export class CoursController {
                 name: body.name,
                 price: body.price,
                 user: body.user,
+                score: body.score,
             });
 
             res.json(cours);
@@ -25,7 +26,7 @@ export class CoursController {
 
     async getAllCours(req: Request, res: Response) {
         try {
-            const allCours = await CoursService.getInstance().getAll(req.params.user);
+            const allCours = await CoursService.getInstance().getAll();
             res.json(allCours);
         } catch(err) {
             res.status(500).end();
@@ -79,10 +80,10 @@ export class CoursController {
         const router = express.Router();
         router.use(express.json());
         router.post('/', this.createCours.bind(this));
-        router.get('/:user/cours', this.getAllCours.bind(this));
-        router.get('/:user/cours/:id',  this.getOneCours.bind(this));
-        router.delete('/:user/cours/:id', [checkAuth()], this.deleteCours.bind(this));
-        router.put('/:user/cours/:id', [checkAuth(), checkCours()], this.updateCours.bind(this));
+        router.get('/cours', this.getAllCours.bind(this));
+        router.get('/cour/:id',  this.getOneCours.bind(this));
+        router.delete('/cour/:id', this.deleteCours.bind(this));
+        router.put('/cour/:id', [checkCours()], this.updateCours.bind(this));
         return router;
     }
 }

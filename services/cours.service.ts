@@ -17,8 +17,8 @@ export class CoursService {
         return await model.save();
     }
 
-    async getAll(user_id: string): Promise<CoursDocument[]> {
-        return CoursModel.find({user: user_id}).exec();
+    async getAll(): Promise<CoursDocument[]> {
+        return CoursModel.find().exec();
     }
 
     async getOneById(id: string): Promise<CoursDocument | null> {
@@ -44,6 +44,9 @@ export class CoursService {
         }
         if(props.user !== undefined) {
             cours.user = props.user;
+        }
+        if(props.score !== undefined) {
+            cours.score = props.score;
         }
 
         return await cours.save();

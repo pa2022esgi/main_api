@@ -15,6 +15,14 @@ export function checkCours(all: boolean = false): RequestHandler {
                     error.price = "missing parameter"
                 }
 
+                if(!body.user) {
+                    error.user = "missing parameter"
+                }
+
+                if(!body.score) {
+                    error.score = "missing parameter"
+                }
+
             }
 
 
