@@ -19,7 +19,7 @@ export class UserService{
 
     public async addOneUser(userProps: Partial<UserProps>):Promise<UserDocument>{
         const userModel = new UserModel({
-            name: userProps.name,
+            firstname: userProps.firstname,
             type: userProps.type,
             login: userProps.login,
             password: userProps.password,

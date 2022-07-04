@@ -10,18 +10,24 @@ const userSchema = new Schema({
         type: Schema.Types.String,
         required: true
     },
-    name: {
-        type: Schema.Types.String,
-        required: false
-    },
     type: {
+        type: Schema.Types.String,
+        required: true
+    },
+    firstname: {
+        type: Schema.Types.String,
+    },
+    lastname: {
         type: Schema.Types.String,
     },
     address: {
         type: Schema.Types.String
     },
     phone: {
-        type: Schema.Types.Number,
+        type: Schema.Types.String,
+    },
+    birthdate: {
+        type: Schema.Types.Date,
     },
 }, {
     collection: "users",
@@ -37,12 +43,14 @@ userSchema.methods.toJSON = function() {
 
 export interface UserProps {
     _id: string;
-    name: string;
-    type: string;
-    login: string;
     password?: string;
-    phone: number;
+    type: string;
+    firstname: string;
+    lastname: string;
+    login: string;
+    phone: string;
     address: string;
+    birthdate: Date;
 }
 
 export type UserDocument = UserProps & Document;
