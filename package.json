@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/index.js",
-    "build -windows": "rd /q /s dist && tsc",
+    "buildw": "rd /q /s dist && tsc",
     "build": "rm -rf ./dist && tsc"
   },
   "author": "",
@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
