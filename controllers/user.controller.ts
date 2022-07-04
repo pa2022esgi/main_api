@@ -1,5 +1,6 @@
-import {UserService} from "../services/user.service";
+import {UserService} from "../services";
 import express, {Request, Response, Router} from "express";
+import {checkAuth} from "../middlewares";
 
 export class UserController{
 
@@ -43,15 +44,19 @@ export class UserController{
         }
     }
 
+    async me(req: Request, res: Response) {
+        res.json(req.body.auth);
+    }
+
     buildRoutes():Router {
         const router = express.Router();
+        router.use(express.json())
 
         router.get("/",this.getAllUsers.bind(this));
+        router.post("/",this.addOneUser.bind(this));
+        router.delete("/:id",this.deleteOneByLogin.bind(this));
 
-        router.post("/",express.json(),this.addOneUser.bind(this));
-
-        router.delete("/:id",express.json(),this.deleteOneByLogin.bind(this));
-
+        router.get("/me", checkAuth(), this.me.bind(this));
         return router;
     }
 }

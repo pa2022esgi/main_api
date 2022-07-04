@@ -21,16 +21,18 @@ async function startServer(): Promise<void> {
 
     const app = express();
 
+    const cors = require('cors');
+    app.use(cors({
+        origin:['http://localhost:4200','http://127.0.0.1:4200'],
+        credentials:true
+    }));
+
     app.use((req, res, next) => {
-        res.append('Access-Control-Allow-Origin', ['*']);
-        res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-        res.append('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Allow-Origin', ['*']);
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
         next();
     });
-
-    app.listen(80, function () {
-        console.log('CORS-enabled web server listening on port 80')
-    })
 
     app.get('/', function (req: Request, res: Response) {
         res.send("Welcome to api_front !");
