@@ -49,22 +49,11 @@ export class AuthController {
         }
     }
 
-    async me(req: Request, res: Response) {
-        try {
-            const decoded = AuthService.getInstance().me(req.headers.authorization);
-
-            res.json(decoded);
-        } catch(err) {
-            res.status(400).end();
-        }
-    }
-
     buildRoutes(): Router {
         const router = express.Router();
         router.use(express.json())
         router.post('/register', this.register.bind(this));
         router.post('/login', this.logIn.bind(this));
-        router.get('/me', checkAuth(), this.me.bind(this));
         return router;
     }
 }

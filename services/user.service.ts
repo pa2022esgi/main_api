@@ -29,6 +29,10 @@ export class UserService{
         return await userModel.save();
     }
 
+    async getOneById(id: string): Promise<UserDocument | null> {
+        return UserModel.findById(id).exec();
+    }
+
     public async deleteById(id: string): Promise<boolean> {
         const res = await UserModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;
