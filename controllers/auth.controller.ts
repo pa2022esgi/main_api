@@ -1,6 +1,5 @@
 import express, {Request, Response, Router} from "express";
-import {checkAuth} from "../middlewares";
-import {AuthService} from "../services";
+import {AuthService, UserService} from "../services";
 
 export class AuthController {
 
@@ -8,8 +7,7 @@ export class AuthController {
         try {
             const body = req.body;
 
-            const exist = await AuthService.getInstance().getOneByLogin(body.login);
-
+            const exist = await UserService.getInstance().getOneByLogin(body.login);
             if (exist) {
                 res.status(400).send({ error: 'Already exist' }).end();
                 return;
@@ -41,7 +39,7 @@ export class AuthController {
                 password: body.password
             });
 
-            const user = await AuthService.getInstance().getOneByLogin(body.login);
+            const user = await UserService.getInstance().getOneByLogin(body.login);
 
             res.json({user: user, token: token});
         } catch(err) {

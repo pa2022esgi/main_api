@@ -15,14 +15,7 @@ export class UserController{
         try {
             const reqBody = req.body;
 
-            const user = await this.userService.addOneUser({
-                name: reqBody.name,
-                type: reqBody.type,
-                password: reqBody.password,
-                login: reqBody.login,
-                address: reqBody.address,
-                phone: reqBody.phone
-            });
+            const user = await this.userService.addOneUser(reqBody);
 
             res.json(user);
         } catch (e) {
@@ -48,6 +41,32 @@ export class UserController{
         res.json(req.body.auth);
     }
 
+    async updateUser(req:Request, res:Response) {
+        try {
+            const body = req.body;
+
+            if(body.login && body.login != body.auth.login) {
+                const exist = await UserService.getInstance().getOneByLogin(body.login);
+
+                if (exist) {
+                    res.status(400).send({msg : 'L\'email est déjà utilisé'}).end();
+                    return
+                }
+            }
+
+            const user = await UserService.getInstance().updateById(req.params.id, req.body);
+
+            if(!user) {
+                res.status(404).end();
+                return;
+            }
+
+            res.json(user);
+        } catch (err) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
         router.use(express.json())
@@ -56,6 +75,7 @@ export class UserController{
         router.post("/",this.addOneUser.bind(this));
         router.delete("/:id",this.deleteOneByLogin.bind(this));
 
+        router.put("/:id", checkAuth(), this.updateUser.bind(this));
         router.get("/me", checkAuth(), this.me.bind(this));
         return router;
     }

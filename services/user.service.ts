@@ -1,4 +1,5 @@
 import {UserDocument, UserModel, UserProps} from "../models";
+import {AuthUtil} from "../utils";
 
 export class UserService{
 
@@ -33,8 +34,43 @@ export class UserService{
         return UserModel.findById(id).exec();
     }
 
+    async getOneByLogin(login: string): Promise<UserDocument | null> {
+        return await UserModel.findOne({login : login}).exec();
+    }
+
     public async deleteById(id: string): Promise<boolean> {
         const res = await UserModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;
+    }
+
+    public async updateById(id: string, props: UserProps): Promise<UserDocument | null> {
+        const user = await this.getOneById(id);
+        if(!user) {
+            return null;
+        }
+
+        if (props.login !== undefined) {
+            user.login = props.login;
+        }
+        if (props.firstname !== undefined) {
+            user.firstname = props.firstname;
+        }
+        if (props.lastname !== undefined) {
+            user.lastname = props.lastname;
+        }
+        if (props.phone !== undefined) {
+            user.phone = props.phone;
+        }
+        if (props.address !== undefined) {
+            user.address = props.address;
+        }
+        if (props.birthdate !== undefined) {
+            user.birthdate = props.birthdate;
+        }
+        if (props.password !== undefined) {
+            user.password = AuthUtil.sha512(props.password);
+        }
+
+        return await user.save();
     }
 }

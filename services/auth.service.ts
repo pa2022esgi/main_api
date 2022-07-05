@@ -16,10 +16,6 @@ export class AuthService {
 
     private constructor() { }
 
-    async getOneByLogin(login: string): Promise<UserDocument | null> {
-        return await UserModel.findOne({login : login}).exec();
-    }
-
     public async register(props: Partial<UserProps>): Promise<UserDocument> {
 
         const model = new UserModel({
@@ -47,15 +43,5 @@ export class AuthService {
             email: user.login,
             type: user.type
         }, process.env.SECRET, {expiresIn: '1d'})
-    }
-
-    public me(token: string | undefined): string {
-        const extracted = AuthUtil.getToken(token)
-
-        const content = jwt.decode(extracted, {complete: false})
-        content.iat = new Date(content.iat * 1000).toISOString();
-        content.exp = new Date(content.exp * 1000).toISOString();
-
-        return content;
     }
 }
