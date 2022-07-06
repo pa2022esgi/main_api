@@ -14,7 +14,6 @@ export class UserController{
     async addOneUser(req:Request,res:Response){
         try {
             const reqBody = req.body;
-
             const user = await this.userService.addOneUser(reqBody);
 
             res.json(user);
@@ -47,7 +46,6 @@ export class UserController{
 
             if(body.email && body.email != body.auth.email) {
                 const exist = await UserService.getInstance().getOneByEmail(body.email);
-
                 if (exist) {
                     res.status(400).send({msg : 'L\'email est déjà utilisé'}).end();
                     return
@@ -55,7 +53,6 @@ export class UserController{
             }
 
             const user = await UserService.getInstance().updateById(req.params.id, req.body);
-
             if(!user) {
                 res.status(404).end();
                 return;

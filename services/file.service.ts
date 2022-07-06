@@ -1,4 +1,4 @@
-import {FileModel, UserDocument, UserModel} from "../models";
+import {FileModel, UserDocument} from "../models";
 
 const cloudinary = require("cloudinary");
 require('dotenv').config()
@@ -19,6 +19,11 @@ export class FileService {
         return FileService.instance;
     }
 
+    async deleteById(id: string): Promise<boolean> {
+        const res = await FileModel.deleteOne({_id: id}).exec();
+        return res.deletedCount === 1;
+    }
+
     async uploadProfilePicture(file: any, user: UserDocument) {
         const result =  await cloudinary.uploader.upload(file.tempFilePath, {
             resource_type: "auto"
@@ -27,12 +32,12 @@ export class FileService {
         const doc = new FileModel({
             url: result.url,
         });
-
         await doc.save();
+
         user.profile_img = doc;
         await user.save();
 
-        return result.url;
+        return doc;
     }
 
     private constructor() {}
