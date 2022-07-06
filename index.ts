@@ -2,7 +2,7 @@ import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
 import mongoose from "mongoose";
-import {AuthController, CoursController, UserController} from "./controllers";
+import {AuthController, CoursController, UserController, FileController} from "./controllers";
 import {SeedUtil} from "./utils/seed.util";
 
 config();
@@ -20,6 +20,9 @@ async function startServer(): Promise<void> {
     await SeedUtil.seed(true,false);
 
     const app = express();
+
+    const fileUpload = require('express-fileupload');
+    app.use(fileUpload({useTempFiles: true}))
 
     const cors = require('cors');
     app.use(cors({
@@ -44,6 +47,8 @@ async function startServer(): Promise<void> {
     app.use('/cours', coursController.buildRoutes());
     const userController = new UserController();
     app.use('/users', userController.buildRoutes());
+    const fileController = new FileController();
+    app.use('/users', fileController.buildRoutes());
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);

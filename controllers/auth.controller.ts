@@ -7,25 +7,26 @@ export class AuthController {
         try {
             const body = req.body;
 
-            const exist = await UserService.getInstance().getOneByLogin(body.login);
+            const exist = await UserService.getInstance().getOneByEmail(body.email);
             if (exist) {
-                res.status(400).send({ error: 'Already exist' }).end();
+                res.status(400).send({ msg: 'Un utilisateur avec cet email existe déjà' }).end();
                 return;
             }
 
             const user = await AuthService.getInstance().register({
-                login: body.login,
+                email: body.email,
                 password: body.password,
-                type: body.type,
+                role: body.role,
             });
 
             const token = await AuthService.getInstance().logIn({
-                login: body.login,
+                email: body.email,
                 password: body.password
             });
 
             res.json({user: user, token: token});
         } catch(err) {
+            console.log(err)
             res.status(400).end();
         }
     }
@@ -35,15 +36,15 @@ export class AuthController {
             const body = req.body;
 
             const token = await AuthService.getInstance().logIn({
-                login: body.login,
+                email: body.email,
                 password: body.password
             });
 
-            const user = await UserService.getInstance().getOneByLogin(body.login);
+            const user = await UserService.getInstance().getOneByEmail(body.email);
 
             res.json({user: user, token: token});
         } catch(err) {
-            res.status(401).send({ error: 'Invalid credentials' }).end();
+            res.status(401).send({msg: "Accés refusé"}).end();
         }
     }
 

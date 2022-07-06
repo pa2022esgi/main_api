@@ -19,9 +19,9 @@ export class AuthService {
     public async register(props: Partial<UserProps>): Promise<UserDocument> {
 
         const model = new UserModel({
-            login: props.login,
+            email: props.email,
             password: AuthUtil.sha512(props.password!),
-            type: props.type,
+            role: props.role,
         });
 
         return await model.save();
@@ -30,7 +30,7 @@ export class AuthService {
     public async logIn(props: Partial<UserProps>): Promise<string> {
 
         const user = await UserModel.findOne({
-            login: props.login,
+            email: props.email,
             password: AuthUtil.sha512(props.password!),
         }).exec();
 
@@ -40,8 +40,8 @@ export class AuthService {
 
         return await jwt.sign({
             id: user.id,
-            email: user.login,
-            type: user.type
+            email: user.email,
+            role: user.role
         }, process.env.SECRET, {expiresIn: '1d'})
     }
 }

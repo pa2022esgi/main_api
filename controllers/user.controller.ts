@@ -45,8 +45,8 @@ export class UserController{
         try {
             const body = req.body;
 
-            if(body.login && body.login != body.auth.login) {
-                const exist = await UserService.getInstance().getOneByLogin(body.login);
+            if(body.email && body.email != body.auth.email) {
+                const exist = await UserService.getInstance().getOneByEmail(body.email);
 
                 if (exist) {
                     res.status(400).send({msg : 'L\'email est déjà utilisé'}).end();

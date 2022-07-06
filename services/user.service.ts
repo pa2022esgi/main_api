@@ -21,8 +21,8 @@ export class UserService{
     public async addOneUser(userProps: Partial<UserProps>):Promise<UserDocument>{
         const userModel = new UserModel({
             firstname: userProps.firstname,
-            type: userProps.type,
-            login: userProps.login,
+            role: userProps.role,
+            email: userProps.email,
             password: userProps.password,
             address: userProps.address,
             phone: userProps.phone
@@ -34,8 +34,8 @@ export class UserService{
         return UserModel.findById(id).exec();
     }
 
-    async getOneByLogin(login: string): Promise<UserDocument | null> {
-        return await UserModel.findOne({login : login}).exec();
+    async getOneByEmail(email: string): Promise<UserDocument | null> {
+        return await UserModel.findOne({email : email}).exec();
     }
 
     public async deleteById(id: string): Promise<boolean> {
@@ -49,8 +49,8 @@ export class UserService{
             return null;
         }
 
-        if (props.login !== undefined) {
-            user.login = props.login;
+        if (props.email !== undefined) {
+            user.email = props.email;
         }
         if (props.firstname !== undefined) {
             user.firstname = props.firstname;
