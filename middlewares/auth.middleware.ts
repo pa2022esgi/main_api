@@ -16,7 +16,7 @@ export function checkAuth(): RequestHandler {
 
             next();
         } catch(err) {
-            res.status(401).send({ error: 'Invalid or missing bearer token' }).end();
+            res.status(401).end();
         }
     }
 }

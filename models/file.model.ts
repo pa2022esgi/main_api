@@ -5,6 +5,10 @@ const fileSchema = new Schema({
         type: Schema.Types.String,
         required: true
     },
+    name: {
+        type: Schema.Types.String,
+        required: true
+    }
 }, {
     collection: "files",
     timestamps: true,
@@ -14,6 +18,7 @@ const fileSchema = new Schema({
 export interface FileProps {
     _id: string
     url: string;
+    name: string;
 }
 
 export type FileDocument = FileProps & Document;

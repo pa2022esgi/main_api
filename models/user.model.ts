@@ -34,7 +34,12 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "File",
         autopopulate: true
-    }
+    },
+    documents: [{
+        type: Schema.Types.ObjectId,
+        ref: "File",
+        autopopulate: true
+    }]
 }, {
     collection: "users",
     timestamps: true,
@@ -60,6 +65,7 @@ export interface UserProps {
     address: string;
     birthdate: Date;
     profile_img: FileProps;
+    documents: FileProps[];
 }
 
 export type UserDocument = UserProps & Document;
