@@ -34,6 +34,10 @@ export class CoursService {
         return CoursModel.findById(id).exec();
     }
 
+    async getOneByUser(user: UserDocument): Promise<CoursDocument | null> {
+        return CoursModel.findOne({user: user}).exec();
+    }
+
     async deleteById(id: string): Promise<boolean> {
         const res = await CoursModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;

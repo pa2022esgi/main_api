@@ -41,7 +41,27 @@ export class CoursController {
         try {
             const cours = await CoursService.getInstance().getOneById(req.params.id);
             if(!cours) {
-                res.status(404).send({error : "Cours not found"}).end();
+                res.status(404).send().end();
+                return;
+            }
+            res.json(cours);
+        } catch(err) {
+            res.status(400).end();
+            return;
+        }
+    }
+
+    async getUserCours(req: Request, res: Response){
+        try {
+            const user = await UserService.getInstance().getOneById(req.params.user);
+            if(!user) {
+                res.status(404).end();
+                return;
+            }
+
+            const cours = await CoursService.getInstance().getOneByUser(user);
+            if(!cours) {
+                res.status(404).send().end();
                 return;
             }
             res.json(cours);
@@ -83,7 +103,9 @@ export class CoursController {
         const router = express.Router();
         router.use(express.json());
         router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
+        router.get('/users/:user/cours', checkAuth(), this.getUserCours.bind(this));
 
+        router.get('/cour/:id',  this.getOneCours.bind(this));
         router.get('/cours', this.getAllCours.bind(this));
         router.get('/cour/:id',  this.getOneCours.bind(this));
         router.delete('/cour/:id', this.deleteCours.bind(this));
