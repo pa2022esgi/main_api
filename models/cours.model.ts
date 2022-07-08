@@ -1,5 +1,6 @@
 import mongoose, {Schema, Document, Model} from "mongoose";
 import {UserDocument} from "./user.model";
+import {FileDocument} from "./file.model";
 
 const coursSchema = new Schema({
     name: {
@@ -49,7 +50,7 @@ export interface CoursProps {
     user: UserDocument;
     online: boolean;
     available: boolean;
-    cover: boolean;
+    cover: FileDocument;
     text: string;
 }
 

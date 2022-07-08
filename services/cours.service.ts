@@ -43,10 +43,14 @@ export class CoursService {
         return res.deletedCount === 1;
     }
 
-    async updateById(id: string, props: CoursProps): Promise<CoursDocument | null> {
+    async updateById(id: string, props: Partial<CoursProps>, file: FileDocument | null): Promise<CoursDocument | null> {
         const cours = await this.getOneById(id);
         if(!cours) {
             return null;
+        }
+
+        if (file) {
+            cours.cover = file;
         }
 
         if(props.name !== undefined) {
@@ -55,8 +59,14 @@ export class CoursService {
         if(props.price !== undefined) {
             cours.price = props.price;
         }
-        if(props.user !== undefined) {
-            cours.user = props.user;
+        if (props.online !== undefined) {
+            cours.online = props.online
+        }
+        if (props.available !== undefined) {
+            cours.available = props.available
+        }
+        if (props.text !== undefined) {
+            cours.text = props.text
         }
 
         return await cours.save();

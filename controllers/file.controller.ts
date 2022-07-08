@@ -43,7 +43,7 @@ export class FileController {
     async uploadDocuments(req: any, res: Response) {
         try {
             if (req.files) {
-                const file = await FileService.getInstance().uploadDocument(req.files.file);
+                const file = await FileService.getInstance().uploadDocument(req.files.file, req.body.auth);
 
                 res.json(file);
             }

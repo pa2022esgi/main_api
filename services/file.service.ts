@@ -24,10 +24,10 @@ export class FileService {
         return res.deletedCount === 1;
     }
 
-    async uploadDocument(file: any) {
+    async uploadDocument(file: any, user: UserDocument) {
         const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
             resource_type: "auto",
-            folder: "documents"
+            folder: "documents/" + user._id
         })
 
         const doc = new FileModel({
@@ -42,7 +42,7 @@ export class FileService {
     async uploadUserDocument(file: any, user: UserDocument) {
         const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
             resource_type: "auto",
-            folder: "user_doc"
+            folder: "user_doc/" + user._id
         })
 
         const doc = new FileModel({
@@ -64,7 +64,7 @@ export class FileService {
     async uploadProfilePicture(file: any, user: UserDocument) {
         const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
             resource_type: "auto",
-            folder: "profile_pic"
+            folder: "profile_pic" + user._id
         })
 
         const doc = new FileModel({

@@ -1,6 +1,6 @@
 import express, {Router, Request, Response} from "express";
 import {CoursService, FileService, UserService} from "../services";
-import {checkAuth, checkCours,} from "../middlewares";
+import {checkAuth} from "../middlewares";
 
 export class CoursController {
     async createCours(req: any, res: Response) {
@@ -61,7 +61,7 @@ export class CoursController {
 
             const cours = await CoursService.getInstance().getOneByUser(user);
             if(!cours) {
-                res.status(404).send().end();
+                res.status(404).send({msg : "Cet utilsateur n'a aucun cours"}).end();
                 return;
             }
             res.json(cours);
@@ -86,10 +86,24 @@ export class CoursController {
 
     async updateCours(req: Request, res: Response) {
         try {
-            const cours = await CoursService.getInstance().updateById(req.params.id, req.body);
+            const body = req.body;
+
+            let cover = null;
+
+            if (body.file) {
+                const file = await FileService.getInstance().findOneById(body.file);
+                if(!file) {
+                    res.status(404).end();
+                    return;
+                } else {
+                    cover = file;
+                }
+            }
+
+            const cours = await CoursService.getInstance().updateById(req.params.id, body, cover);
 
             if(!cours) {
-                res.status(404).send({error : "Cours not found"}).end();
+                res.status(404).end();
                 return;
             }
 
@@ -104,12 +118,12 @@ export class CoursController {
         router.use(express.json());
         router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
         router.get('/users/:user/cours', checkAuth(), this.getUserCours.bind(this));
+        router.put('/cours/:id', this.updateCours.bind(this));
 
         router.get('/cour/:id',  this.getOneCours.bind(this));
         router.get('/cours', this.getAllCours.bind(this));
         router.get('/cour/:id',  this.getOneCours.bind(this));
         router.delete('/cour/:id', this.deleteCours.bind(this));
-        router.put('/cour/:id', [checkCours()], this.updateCours.bind(this));
         return router;
     }
 }
