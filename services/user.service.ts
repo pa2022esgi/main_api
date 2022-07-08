@@ -70,6 +70,9 @@ export class UserService{
         if (props.password !== undefined) {
             user.password = AuthUtil.sha512(props.password);
         }
+        if (props.validated !== undefined) {
+            user.validated = props.validated;
+        }
 
         return await user.save();
     }

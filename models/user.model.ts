@@ -39,7 +39,11 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "File",
         autopopulate: true
-    }]
+    }],
+    validated: {
+        type: Schema.Types.Boolean,
+        default: false
+    }
 }, {
     collection: "users",
     timestamps: true,
@@ -66,6 +70,7 @@ export interface UserProps {
     birthdate: Date;
     profile_img: FileProps;
     documents: FileProps[];
+    validated: boolean;
 }
 
 export type UserDocument = UserProps & Document;
