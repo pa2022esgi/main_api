@@ -1,21 +1,24 @@
 import express, {Router, Request, Response} from "express";
-import { CoursService } from "../services";
+import {CoursService, FileService, UserService} from "../services";
 import {checkAuth, checkCours,} from "../middlewares";
 
 export class CoursController {
-    async createCours(req: Request, res: Response) {
+    async createCours(req: any, res: Response) {
         const body = req.body;
-        if(!body.name || !body.price || !body.user || !body.score){
-            res.status(400).end();
-            return;
-        }
         try {
-            const cours = await CoursService.getInstance().createOne({
-                name: body.name,
-                price: body.price,
-                user: body.user,
-                score: body.score,
-            });
+            const user = await UserService.getInstance().getOneById(req.params.user);
+            if(!user) {
+                res.status(404).end();
+                return;
+            }
+
+            const file = await FileService.getInstance().findOneById(body.file);
+            if(!file) {
+                res.status(404).end();
+                return;
+            }
+
+            const cours = await CoursService.getInstance().createOne(body, user, file);
 
             res.json(cours);
         } catch(err) {
@@ -79,7 +82,8 @@ export class CoursController {
     buildRoutes(): Router {
         const router = express.Router();
         router.use(express.json());
-        router.post('/', this.createCours.bind(this));
+        router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
+
         router.get('/cours', this.getAllCours.bind(this));
         router.get('/cour/:id',  this.getOneCours.bind(this));
         router.delete('/cour/:id', this.deleteCours.bind(this));

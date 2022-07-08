@@ -31,7 +31,7 @@ export class UserService{
     }
 
     async getOneById(id: string): Promise<UserDocument | null> {
-        return UserModel.findById(id).exec();
+        return await UserModel.findById(id).exec();
     }
 
     async getOneByEmail(email: string): Promise<UserDocument | null> {

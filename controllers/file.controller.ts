@@ -13,7 +13,7 @@ export class FileController {
                     return;
                 }
 
-                const file = await FileService.getInstance().uploadProfilePicture(req.files.file!, user);
+                const file = await FileService.getInstance().uploadProfilePicture(req.files.file, user);
 
                 res.json(file);
             }
@@ -31,7 +31,19 @@ export class FileController {
                     return;
                 }
 
-                const file = await FileService.getInstance().uploadUserDocument(req.files.file!, user);
+                const file = await FileService.getInstance().uploadUserDocument(req.files.file, user);
+
+                res.json(file);
+            }
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
+    async uploadDocuments(req: any, res: Response) {
+        try {
+            if (req.files) {
+                const file = await FileService.getInstance().uploadDocument(req.files.file);
 
                 res.json(file);
             }
@@ -57,9 +69,10 @@ export class FileController {
     buildRoutes():Router {
         const router = express.Router();
 
-        router.post("/:user/documents/profile", checkAuth(), this.uploadProfilePicture.bind(this));
-        router.post("/:user/documents", checkAuth(), this.uploadUserDocuments.bind(this));
-        router.delete("/:user/documents/:id", checkAuth(), this.deleteUserFile.bind(this));
+        router.post("/documents", checkAuth(), this.uploadDocuments.bind(this));
+        router.post("/users/:user/documents/profile", checkAuth(), this.uploadProfilePicture.bind(this));
+        router.post("/users/:user/documents", checkAuth(), this.uploadUserDocuments.bind(this));
+        router.delete("/users/:user/documents/:id", checkAuth(), this.deleteUserFile.bind(this));
         return router;
     }
 }

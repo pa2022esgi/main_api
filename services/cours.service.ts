@@ -1,4 +1,4 @@
-import {CoursDocument, CoursModel, CoursProps} from "../models";
+import {CoursDocument, CoursModel, CoursProps, FileDocument, UserDocument} from "../models";
 
 export class CoursService {
     private static instance?: CoursService;
@@ -12,8 +12,17 @@ export class CoursService {
 
     private constructor() { }
 
-    public async createOne(props: Partial<CoursProps>): Promise<CoursDocument> {
-        const model = new CoursModel(props);
+    public async createOne(props: Partial<CoursProps>, user: UserDocument, file: FileDocument): Promise<CoursDocument> {
+        const model = new CoursModel({
+            name : props.name,
+            price : props.price,
+            user: user,
+            text: props.text,
+            online: props.online,
+            available: props.available,
+            cover: file
+        });
+
         return await model.save();
     }
 
@@ -44,9 +53,6 @@ export class CoursService {
         }
         if(props.user !== undefined) {
             cours.user = props.user;
-        }
-        if(props.score !== undefined) {
-            cours.score = props.score;
         }
 
         return await cours.save();

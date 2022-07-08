@@ -44,11 +44,11 @@ async function startServer(): Promise<void> {
     const authController = new AuthController();
     app.use('/auth', authController.buildRoutes());
     const coursController = new CoursController();
-    app.use('/cours', coursController.buildRoutes());
+    app.use('', coursController.buildRoutes());
     const userController = new UserController();
     app.use('/users', userController.buildRoutes());
     const fileController = new FileController();
-    app.use('/users', fileController.buildRoutes());
+    app.use('', fileController.buildRoutes());
 
     app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
