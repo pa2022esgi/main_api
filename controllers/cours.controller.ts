@@ -41,7 +41,7 @@ export class CoursController {
         try {
             const cours = await CoursService.getInstance().getOneById(req.params.id);
             if(!cours) {
-                res.status(404).send().end();
+                res.status(404).end();
                 return;
             }
             res.json(cours);
@@ -119,8 +119,8 @@ export class CoursController {
         router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
         router.get('/users/:user/cours', checkAuth(), this.getUserCours.bind(this));
         router.put('/cours/:id', this.updateCours.bind(this));
+        router.get('/cours/:id',  this.getOneCours.bind(this));
 
-        router.get('/cour/:id',  this.getOneCours.bind(this));
         router.get('/cours', this.getAllCours.bind(this));
         router.get('/cour/:id',  this.getOneCours.bind(this));
         router.delete('/cour/:id', this.deleteCours.bind(this));

@@ -64,7 +64,7 @@ export class FileService {
     async uploadProfilePicture(file: any, user: UserDocument) {
         const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
             resource_type: "auto",
-            folder: "profile_pic" + user._id
+            folder: "profile_pic/" + user._id
         })
 
         const doc = new FileModel({
