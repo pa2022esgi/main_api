@@ -18,6 +18,10 @@ export class ChatService {
         return await chat.save();
     }
 
+    async getUserChats(user: UserDocument) {
+        return ChatModel.find({users: { $elemMatch: {$eq: user} }});
+    }
+
     async exist(users: UserDocument[]) {
         return ChatModel.findOne({users: {$all: users}});
     }

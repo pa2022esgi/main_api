@@ -8,9 +8,9 @@ export class SocketController {
             socket.id = socket.handshake.query.userId;
             console.log('a user connected');
 
-            socket.on('message', (message: string, to: any) => {
-                console.log(message);
-                io.to(to).emit('message', `${socket.id} said ${message}`);
+            socket.on('message', (content: any) => {
+                console.log(content.message);
+                io.emit('message', `${socket.id} said ${content.message}`);
             });
 
             socket.on('disconnect', () => {

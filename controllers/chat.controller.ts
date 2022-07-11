@@ -15,7 +15,7 @@ export class ChatController {
             }
 
             if(!user2) {
-                res.status(404).send({msg: 'Aucun professeur avec cette identifiant'}).end();
+                res.status(404).send({msg: 'Aucun professeur avec cet identifiant'}).end();
                 return;
             }
 
@@ -34,11 +34,29 @@ export class ChatController {
         }
     }
 
+    async getUserChats(req: Request, res: Response) {
+        try {
+            const user = await UserService.getInstance().getOneById(req.params.user);
+            if(!user) {
+                res.status(404).end();
+                return;
+            }
+
+            const chats = await ChatService.getInstance().getUserChats(user);
+
+            res.json(chats)
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
         router.use(express.json())
 
-        router.post("", checkAuth(), this.createChat.bind(this));
+        router.get("/users/:user/chats", checkAuth(), this.getUserChats.bind(this));
+        router.post("/chats", checkAuth(), this.createChat.bind(this));
+
         return router;
     }
 

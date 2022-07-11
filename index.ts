@@ -57,7 +57,7 @@ async function startServer(): Promise<void> {
     const fileController = new FileController();
     app.use('', fileController.buildRoutes());
     const chatController = new ChatController();
-    app.use('/chats', chatController.buildRoutes());
+    app.use('', chatController.buildRoutes());
 
     const server = app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
