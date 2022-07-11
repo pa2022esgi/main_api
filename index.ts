@@ -2,8 +2,15 @@ import {config} from "dotenv";
 import express from 'express';
 import {Request, Response} from "express";
 import mongoose from "mongoose";
-import {AuthController, CoursController, UserController, FileController} from "./controllers";
-import {SeedUtil} from "./utils/seed.util";
+import {
+    AuthController,
+    CoursController,
+    UserController,
+    FileController,
+    SocketController,
+    ChatController
+} from "./controllers";
+import {SeedUtil} from "./utils";
 
 config();
 
@@ -26,14 +33,14 @@ async function startServer(): Promise<void> {
 
     const cors = require('cors');
     app.use(cors({
-        origin:['http://localhost:4200','http://127.0.0.1:4200'],
+        origin: process.env.FRONT_URL,
         credentials:true
     }));
 
     app.use((req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', ['*']);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type');
         next();
     });
 
@@ -49,10 +56,14 @@ async function startServer(): Promise<void> {
     app.use('/users', userController.buildRoutes());
     const fileController = new FileController();
     app.use('', fileController.buildRoutes());
+    const chatController = new ChatController();
+    app.use('/chats', chatController.buildRoutes());
 
-    app.listen(process.env.PORT, function () {
+    const server = app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
     })
+
+    SocketController.init(server)
 }
 
 startServer().catch(console.error);
