@@ -5,12 +5,13 @@ export class SocketController {
         });
 
         io.on('connection', (socket: any) => {
-            socket.id = socket.handshake.query.userId;
-            console.log('a user connected');
+            socket.sessionId = socket.handshake.query.userId;
+            socket.join(socket.sessionId);
+            console.log(socket.id + ' is connected');
 
             socket.on('message', (content: any) => {
-                console.log(content.message);
-                io.emit('message', `${socket.id} said ${content.message}`);
+                console.log(socket.sessionId + ' to ' + content.to);
+                io.to(content.to).emit('message', `${socket.id} said ${content.message}`);
             });
 
             socket.on('disconnect', () => {

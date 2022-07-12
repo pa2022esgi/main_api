@@ -50,12 +50,28 @@ export class ChatController {
         }
     }
 
+    async getChat(req: Request, res: Response) {
+        try {
+            const chat = await ChatService.getInstance().getChat(req.params.id);
+
+            if (!chat) {
+                res.status(404).end();
+                return;
+            }
+
+            return res.json(chat);
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
         router.use(express.json())
 
         router.get("/users/:user/chats", checkAuth(), this.getUserChats.bind(this));
         router.post("/chats", checkAuth(), this.createChat.bind(this));
+        router.get("/chats/:id", checkAuth(), this.getChat.bind(this));
 
         return router;
     }
