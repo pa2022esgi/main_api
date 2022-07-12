@@ -9,7 +9,7 @@ const chatSchema = new Schema({
         autopopulate: true
     }],
     messages: [{
-        type: Schema.Types.String,
+        type: Schema.Types.ObjectId,
         ref: "Message",
         autopopulate: true
     }]
@@ -24,7 +24,7 @@ chatSchema.plugin(require('mongoose-autopopulate'));
 export interface ChatProps {
     _id: string
     users: UserDocument[];
-    messages: MessageDocument;
+    messages: MessageDocument[];
 }
 
 export type ChatDocument = ChatProps & Document;
