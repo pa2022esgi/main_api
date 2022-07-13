@@ -1,4 +1,5 @@
 import {CoursDocument, SlotDocument, SlotModel, SlotProps, UserDocument} from "../models";
+import startOfDay from 'date-fns/startOfDay'
 
 export class SlotService {
     private static instance?:SlotService;
@@ -28,7 +29,7 @@ export class SlotService {
             return await SlotModel.find({
                 cours: cours,
                 date: {
-                    $gte: new Date(),
+                    $gte: startOfDay(new Date()),
                 }
             }).sort({date: 'asc'}).exec();
         } else {
@@ -41,7 +42,7 @@ export class SlotService {
             return await SlotModel.find({
                 user: user,
                 date: {
-                    $gte: new Date(),
+                    $gte: startOfDay(new Date()),
                 }
             }).sort({date: 'asc'}).exec();
         } else {
