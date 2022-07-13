@@ -8,7 +8,7 @@ import {
     UserController,
     FileController,
     SocketController,
-    ChatController
+    ChatController, SlotController
 } from "./controllers";
 import {SeedUtil} from "./utils";
 
@@ -58,6 +58,8 @@ async function startServer(): Promise<void> {
     app.use('', fileController.buildRoutes());
     const chatController = new ChatController();
     app.use('', chatController.buildRoutes());
+    const slotController = new SlotController();
+    app.use('', slotController.buildRoutes());
 
     const server = app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);
