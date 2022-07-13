@@ -6,7 +6,7 @@ const messageSchema = new Schema({
         type: Schema.Types.String,
     },
     user: {
-        type: Schema.Types.String,
+        type: Schema.Types.ObjectId,
         ref: "User",
         autopopulate: true
     }
