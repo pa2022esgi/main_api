@@ -45,10 +45,20 @@ export class CoursController {
                 return;
             }
 
-            cours.canComment = CommentService.getInstance().canComment(req.body.auth, cours);
+            if (req.query.user && req.query.user !== 'null') {
+                const user = await UserService.getInstance().getOneById(req.query.user.toString());
+
+                if (!user) {
+                    res.status(400).end();
+                    return;
+                }
+
+                cours.canComment = await CommentService.getInstance().canComment(user , cours);
+            }
 
             res.json(cours);
         } catch(err) {
+            console.log(err)
             res.status(400).end();
             return;
         }
@@ -71,19 +81,6 @@ export class CoursController {
         } catch(err) {
             res.status(400).end();
             return;
-        }
-    }
-
-    async deleteCours(req: Request, res: Response) {
-        try {
-            const success = await CoursService.getInstance().deleteById(req.params.id);
-            if(success) {
-                res.status(200).send({message : "Cours successfully deleted"}).end();
-            } else {
-                res.status(404).send({error : "Cours not found"}).end();
-            }
-        } catch(err) {
-            res.status(400).end();
         }
     }
 
@@ -121,12 +118,10 @@ export class CoursController {
         router.use(express.json());
         router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
         router.get('/users/:user/cours', checkAuth(), this.getUserCours.bind(this));
-        router.put('/cours/:id', this.updateCours.bind(this));
-        router.get('/cours/:id',  this.getOneCours.bind(this));
+        router.put('/cours/:id', checkAuth(), this.updateCours.bind(this));
+        router.get('/cours/:id', this.getOneCours.bind(this));
 
         router.get('/cours', this.getAllCours.bind(this));
-        router.get('/cour/:id',  this.getOneCours.bind(this));
-        router.delete('/cour/:id', this.deleteCours.bind(this));
         return router;
     }
 }

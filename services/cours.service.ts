@@ -12,7 +12,7 @@ export class CoursService {
 
     private constructor() { }
 
-    public async createOne(props: Partial<CoursProps>, user: UserDocument, file: FileDocument): Promise<CoursDocument> {
+    async createOne(props: Partial<CoursProps>, user: UserDocument, file: FileDocument): Promise<CoursDocument> {
         const model = new CoursModel({
             name : props.name,
             price : props.price,

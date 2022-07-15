@@ -68,9 +68,9 @@ export class UserController{
         const router = express.Router();
         router.use(express.json())
 
-        router.get("/",this.getAllUsers.bind(this));
-        router.post("/",this.addOneUser.bind(this));
-        router.delete("/:id",this.deleteOneByLogin.bind(this));
+        router.get("/", checkAuth(), this.getAllUsers.bind(this));
+        router.post("/", checkAuth(), this.addOneUser.bind(this));
+        router.delete("/:id", checkAuth(), this.deleteOneByLogin.bind(this));
 
         router.put("/:id", checkAuth(), this.updateUser.bind(this));
         router.get("/me", checkAuth(), this.me.bind(this));

@@ -11,6 +11,7 @@ import {
     ChatController, SlotController
 } from "./controllers";
 import {SeedUtil} from "./utils";
+import {CommentController} from "./controllers";
 
 config();
 
@@ -60,6 +61,8 @@ async function startServer(): Promise<void> {
     app.use('', chatController.buildRoutes());
     const slotController = new SlotController();
     app.use('', slotController.buildRoutes());
+    const commentController = new CommentController();
+    app.use('', commentController.buildRoutes());
 
     const server = app.listen(process.env.PORT, function () {
         console.log("Server started & listening on port " + PORT);

@@ -10,7 +10,7 @@ const commentSchema = new Schema({
         ref: "User",
         autopopulate: true
     },
-    mark: {
+    rating: {
         type: Schema.Types.Number
     }
 }, {
@@ -25,7 +25,7 @@ export interface CommentProps {
     _id: string
     text: string;
     user: UserDocument;
-    mark: number;
+    rating: number;
 }
 
 export type CommentDocument = CommentProps & Document;
