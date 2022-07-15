@@ -31,7 +31,7 @@ const slotSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Cours",
         autopopulate: true
-    }
+    },
 }, {
     collection: "slots",
     timestamps: true,

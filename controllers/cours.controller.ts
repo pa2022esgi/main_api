@@ -1,5 +1,5 @@
 import express, {Router, Request, Response} from "express";
-import {CoursService, FileService, UserService} from "../services";
+import {CommentService, CoursService, FileService, UserService} from "../services";
 import {checkAuth} from "../middlewares";
 
 export class CoursController {
@@ -44,6 +44,9 @@ export class CoursController {
                 res.status(404).end();
                 return;
             }
+
+            cours.canComment = CommentService.getInstance().canComment(req.body.auth, cours);
+
             res.json(cours);
         } catch(err) {
             res.status(400).end();

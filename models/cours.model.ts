@@ -1,6 +1,7 @@
 import mongoose, {Schema, Document, Model} from "mongoose";
 import {UserDocument} from "./user.model";
 import {FileDocument} from "./file.model";
+import {CommentDocument} from "./comment.model";
 
 const coursSchema = new Schema({
     name: {
@@ -34,6 +35,14 @@ const coursSchema = new Schema({
         ref: "File",
         autopopulate: true,
         required: true,
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+        autopopulate: true,
+    }],
+    canComment: {
+        type: Schema.Types.Boolean
     }
 }, {
     collection: "cours",
@@ -52,6 +61,8 @@ export interface CoursProps {
     available: boolean;
     cover: FileDocument;
     text: string;
+    comments: CommentDocument[];
+    canComment?: boolean
 }
 
 export type CoursDocument = CoursProps & Document;

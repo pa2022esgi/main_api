@@ -1,6 +1,6 @@
 import express, {Request, Response, Router} from "express";
 import {checkAuth} from "../middlewares";
-import {CoursService, SlotService, UserService} from "../services";
+import {CommentService, CoursService, SlotService, UserService} from "../services";
 
 export class SlotController {
 
