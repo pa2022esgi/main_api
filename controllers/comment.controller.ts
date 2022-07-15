@@ -34,12 +34,24 @@ export class CommentController {
             res.status(400).end();
         }
     }
+
+    async getPopularComments(req: Request, res: Response) {
+        try {
+            const comments = await CommentService.getInstance().getPopularComments();
+
+            res.json(comments);
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
         router.use(express.json())
 
         router.post("/lessons/:lesson/comments", checkAuth(), this.createComment.bind(this));
         router.delete("/comments/:id", checkAuth(), this.deleteComment.bind(this));
+        router.get("/comments/popular", checkAuth(), this.getPopularComments.bind(this))
 
         return router;
     }
