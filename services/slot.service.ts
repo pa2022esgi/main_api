@@ -77,7 +77,16 @@ export class SlotService {
         await slot.save();
     }
 
-    async getAllSlots() {
-        return await SlotModel.find({paid: true}).exec();
+    async getAllSlots(groupBy: boolean) {
+        if (groupBy) {
+            return await SlotModel.aggregate([
+                {$match: { paid: true }},
+                {$group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt"} }, count:{$sum:"$price"}}},
+                {$project: {date: '$_id', count: 1, _id: 0}},
+                {$sort: { "date" : 1}},
+            ]).exec();
+        } else {
+            return await SlotModel.find({paid: true}).sort({createdAt: 'desc'}).exec();
+        }
     }
 }

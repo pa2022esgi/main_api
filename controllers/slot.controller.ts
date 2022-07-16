@@ -102,7 +102,13 @@ export class SlotController {
 
     async getAllSlots(req: Request, res: Response) {
         try {
-            const slots = await SlotService.getInstance().getAllSlots();
+            let groupBy = false;
+
+            if (req.query.groupBy && req.query.groupBy === 'true') {
+                groupBy = true
+            }
+
+            const slots = await SlotService.getInstance().getAllSlots(groupBy);
 
             res.json(slots);
         } catch (e) {
