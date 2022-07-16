@@ -45,9 +45,24 @@ const coursSchema = new Schema({
         type: Schema.Types.Boolean
     }
 }, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     collection: "cours",
     timestamps: true,
     versionKey: false
+});
+
+coursSchema.virtual('rating').get(function() {
+    let rating = 0;
+    if (this.comments.length > 0) {
+        this.comments.forEach((comment: any )=> {
+            rating += comment.rating;
+        });
+
+        return (rating / this.comments.length).toFixed(2);
+    }
+
+    return 0;
 });
 
 coursSchema.plugin(require('mongoose-autopopulate'));
@@ -62,7 +77,8 @@ export interface CoursProps {
     cover: FileDocument;
     text: string;
     comments: CommentDocument[];
-    canComment?: boolean
+    canComment?: boolean;
+    rating: number;
 }
 
 export type CoursDocument = CoursProps & Document;

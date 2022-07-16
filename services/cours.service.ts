@@ -26,8 +26,41 @@ export class CoursService {
         return await model.save();
     }
 
-    async getAll(): Promise<CoursDocument[]> {
-        return CoursModel.find().exec();
+    async getAll(filter: any, sort: string) {
+
+        filter.available = true
+        const cours =  await CoursModel.find(filter).sort(sort).exec();
+
+        if (sort === 'rating') {
+            cours.sort((a, b) => (a.rating < b.rating) ? 1 : -1)
+        }
+
+        let lessons = []
+        for (let lesson of cours) {
+            if (lesson.user.validated) {
+                lessons.push(lesson)
+            }
+        }
+
+        return lessons;
+    }
+
+    async getPopulars() {
+        const cours =  await CoursModel.find({available : true}).exec();
+        cours.sort((a, b) => (a.rating < b.rating) ? 1 : -1)
+
+        let lessons = []
+        for (let lesson of cours) {
+            if (lesson.user.validated) {
+                lessons.push(lesson)
+            }
+        }
+
+        if (lessons.length < 3) {
+            return lessons.slice(0, lessons.length);
+        } else {
+            return lessons.slice(0, 3);
+        }
     }
 
     async getOneById(id: string): Promise<CoursDocument | null> {
@@ -36,11 +69,6 @@ export class CoursService {
 
     async getOneByUser(user: UserDocument): Promise<CoursDocument | null> {
         return CoursModel.findOne({user: user}).exec();
-    }
-
-    async deleteById(id: string): Promise<boolean> {
-        const res = await CoursModel.deleteOne({_id: id}).exec();
-        return res.deletedCount === 1;
     }
 
     async updateById(id: string, props: Partial<CoursProps>, file: FileDocument | null): Promise<CoursDocument | null> {

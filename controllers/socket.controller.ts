@@ -29,7 +29,7 @@ export class SocketController {
                 });
 
                 socket.on('disconnect', () => {
-                    //console.log(socket.sessionId + ' disconnected!');
+                    socket.leave(socket.sessionId)
                 });
             });
         } catch (e) {

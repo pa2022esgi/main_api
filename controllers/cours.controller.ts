@@ -29,7 +29,23 @@ export class CoursController {
 
     async getAllCours(req: Request, res: Response) {
         try {
-            const allCours = await CoursService.getInstance().getAll();
+            let filter: any = {};
+            let sort = '';
+
+            if (req.query.sortBy && req.query.sortBy !== 'null') {
+                sort = req.query.sortBy.toString()
+            }
+
+            if (req.query.online && req.query.online === 'true') {
+                filter.online = true
+            }
+
+            if (req.query.search && req.query.search !== 'null') {
+                filter.name = { $regex: '.*' + req.query.search + '.*' }
+            }
+
+            const allCours = await CoursService.getInstance().getAll(filter, sort);
+
             res.json(allCours);
         } catch(err) {
             res.status(500).end();
@@ -58,7 +74,6 @@ export class CoursController {
 
             res.json(cours);
         } catch(err) {
-            console.log(err)
             res.status(400).end();
             return;
         }
@@ -113,15 +128,26 @@ export class CoursController {
         }
     }
 
+    async getPopularCours(req: Request, res: Response) {
+        try {
+            const cours = await CoursService.getInstance().getPopulars();
+
+            res.json(cours);
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes(): Router {
         const router = express.Router();
         router.use(express.json());
         router.post('/users/:user/cours', checkAuth(), this.createCours.bind(this));
         router.get('/users/:user/cours', checkAuth(), this.getUserCours.bind(this));
+        router.get('/cours/popular', this.getPopularCours.bind(this));
         router.put('/cours/:id', checkAuth(), this.updateCours.bind(this));
         router.get('/cours/:id', this.getOneCours.bind(this));
-
         router.get('/cours', this.getAllCours.bind(this));
+
         return router;
     }
 }
