@@ -100,6 +100,16 @@ export class SlotController {
         }
     }
 
+    async getAllSlots(req: Request, res: Response) {
+        try {
+            const slots = await SlotService.getInstance().getAllSlots();
+
+            res.json(slots);
+        } catch (e) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
         router.use(express.json())
@@ -109,6 +119,7 @@ export class SlotController {
         router.get("/users/:user/slots", checkAuth(), this.getUserSlots.bind(this));
         router.delete("/slots/:id", checkAuth(), this.deleteSlot.bind(this));
         router.put("/slots/:id/pay", checkAuth(), this.paySlot.bind(this));
+        router.get("/slots", checkAuth(), this.getAllSlots.bind(this));
 
         return router;
     }

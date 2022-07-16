@@ -55,6 +55,10 @@ export class CommentService {
         return await CommentModel.find({rating : {$gte: 4}}).sort({createdAt: 'desc'}).limit(3).exec();
     }
 
+    async getComments() {
+        return await CommentModel.find().exec();
+    }
+
     async deleteById(id: string): Promise<boolean> {
         const res = await CommentModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;

@@ -76,4 +76,8 @@ export class SlotService {
         slot.paid = true;
         await slot.save();
     }
+
+    async getAllSlots() {
+        return await SlotModel.find({paid: true}).exec();
+    }
 }
