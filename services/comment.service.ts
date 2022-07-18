@@ -56,7 +56,7 @@ export class CommentService {
     }
 
     async getComments() {
-        return await CommentModel.find().exec();
+        return await CommentModel.find().sort({createdAt: 'desc'}).exec();
     }
 
     async deleteById(id: string): Promise<boolean> {
