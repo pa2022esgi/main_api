@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "buildw": "rd /q /s dist && tsc",
-    "build": "rm -rf dist && tsc"
+    "build": "rd /q /s dist && tsc",
+    "dev": "npm run buildw && npm run start",
+    "zip": "tar.exe -a -c -f dist.zip dist package.json package-lock.json .env",
+    "deploy": "npm run build && npm run zip && eb deploy && del dist.zip"
   },
   "author": "",
   "license": "ISC",
