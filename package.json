@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "rd /q /s dist && tsc",
-    "dev": "npm run buildw && npm run start",
+    "dev": "npm run build && npm run start",
     "zip": "tar.exe -a -c -f dist.zip dist package.json package-lock.json .env",
     "deploy": "npm run build && npm run zip && eb deploy && del dist.zip"
   },
