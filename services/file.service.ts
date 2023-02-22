@@ -1,12 +1,25 @@
-import {FileModel, UserDocument, UserModel} from "../models";
+import {FileModel, UserDocument} from "../models";
+import { PutObjectCommand, DeleteObjectCommand, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const cloudinary = require("cloudinary");
+const fs = require('fs');
 require('dotenv').config()
-cloudinary.config({
+
+const client = new S3Client({
+    credentials: {
+        accessKeyId: process.env.STORAGE_ACCESS_KEY as string,
+        secretAccessKey: process.env.STORAGE_SECRET_KEY as string,
+    },
+    region: process.env.STORAGE_REGION,
+})
+  
+const bucketName = process.env.STORAGE_BUCKET_NAME
+/*cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
-});
+});*/
 
 export class FileService {
 
@@ -20,18 +33,37 @@ export class FileService {
     }
 
     async deleteById(id: string): Promise<boolean> {
+        const file = await FileModel.findById(id).exec();
+
+        if(!file) {
+            return false;
+        }
+
+        const paramsDelete = {
+            Bucket: bucketName,
+            Key: file.url.split(`https://${bucketName}.s3.amazonaws.com/`)[1]
+        }
+
+        await client.send(new DeleteObjectCommand(paramsDelete))
+
         const res = await FileModel.deleteOne({_id: id}).exec();
         return res.deletedCount === 1;
     }
 
     async uploadDocument(file: any, user: UserDocument) {
-        const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
-            resource_type: "auto",
-            folder: "documents/" + user._id
-        })
+        const paramsUpload = {
+            Bucket: bucketName,
+            Key: `documents/${user._id}/${file.name}`,
+            Body: fs.readFileSync(file.tempFilePath),
+            ContentType: file.mimetype
+        }
+        
+        await client.send(new PutObjectCommand(paramsUpload))
+
+        const url = `https://${bucketName}.s3.amazonaws.com/documents/${user._id}/${file.name}`
 
         const doc = new FileModel({
-            url: result.url,
+            url: url,
             name: file.name
         });
         await doc.save();
@@ -40,13 +72,19 @@ export class FileService {
     }
 
     async uploadUserDocument(file: any, user: UserDocument) {
-        const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
-            resource_type: "auto",
-            folder: "user_doc/" + user._id
-        })
+        const paramsUpload = {
+            Bucket: bucketName,
+            Key: `user_doc/${user._id}/${file.name}`,
+            Body: fs.readFileSync(file.tempFilePath),
+            ContentType: file.mimetype
+        }
+        
+        await client.send(new PutObjectCommand(paramsUpload))
+
+        const url = `https://${bucketName}.s3.amazonaws.com/user_doc/${user._id}/${file.name}`
 
         const doc = new FileModel({
-            url: result.url,
+            url: url,
             name: file.name
         });
         await doc.save();
@@ -61,14 +99,37 @@ export class FileService {
         return await FileModel.findById(id).exec();
     }
 
+    async getUserDocumentById(id: string) {
+        const file = await FileModel.findById(id).exec();
+
+        if (!file) {
+            return null;
+        }
+
+        const params = {
+            Bucket: bucketName,
+            Key: file.url.split(`https://${bucketName}.s3.amazonaws.com/`)[1]
+        }
+
+        const command = new GetObjectCommand(params);
+
+        return await getSignedUrl(client, command, { expiresIn: 3600 });
+    }
+
     async uploadProfilePicture(file: any, user: UserDocument) {
-        const result =  await cloudinary.v2.uploader.upload(file.tempFilePath, {
-            resource_type: "auto",
-            folder: "profile_pic/" + user._id
-        })
+        const paramsUpload = {
+            Bucket: bucketName,
+            Key: `profile_pic/${user._id}/${file.name}`,
+            Body: fs.readFileSync(file.tempFilePath),
+            ContentType: file.mimetype
+        }
+        
+        await client.send(new PutObjectCommand(paramsUpload))
+
+        const url = `https://${bucketName}.s3.amazonaws.com/profile_pic/${user._id}/${file.name}`
 
         const doc = new FileModel({
-            url: result.url,
+            url: url,
             name: file.name
         });
         await doc.save();

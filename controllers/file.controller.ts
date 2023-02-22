@@ -66,6 +66,20 @@ export class FileController {
         }
     }
 
+    async getUserFile(req: Request, res: Response) {
+        try {
+            const file = await FileService.getInstance().getUserDocumentById(req.params.id);
+
+            if(file) {
+                res.json(file);
+            } else {
+                res.status(404).end();
+            }
+        } catch(err) {
+            res.status(400).end();
+        }
+    }
+
     buildRoutes():Router {
         const router = express.Router();
 
@@ -73,6 +87,7 @@ export class FileController {
         router.post("/users/:user/documents/profile", checkAuth(), this.uploadProfilePicture.bind(this));
         router.post("/users/:user/documents", checkAuth(), this.uploadUserDocuments.bind(this));
         router.delete("/users/:user/documents/:id", checkAuth(), this.deleteUserFile.bind(this));
+        router.get("/users/:user/documents/:id", checkAuth(), this.getUserFile.bind(this));
         return router;
     }
 }
