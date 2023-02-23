@@ -1,5 +1,6 @@
 import {CoursDocument, SlotDocument, SlotModel, SlotProps, UserDocument} from "../models";
 import startOfDay from 'date-fns/startOfDay'
+import { MailSeeder } from "../seeders";
 
 const Sib = require('sib-api-v3-sdk')
 const client = Sib.ApiClient.instance
@@ -43,15 +44,19 @@ export class SlotService {
         client.sendTransacEmail({
             sender,
             to: receivers,
-            subject: 'Subscribe to Cules Coding to become a developer',
-            htmlContent: `
-            <h1>Cules Coding {{params.role}}</h1>
-            <a href="https://cules-coding.vercel.app/">Visit</a>
-                    `,
+            subject: MailSeeder.notifyUserCreatedSlot.title,
+            htmlContent: MailSeeder.notifyUserCreatedSlot.content,
             params: {
-                role: 'Frontend',
+                lesson_name: model.cours.name,
+                teacher_name: model.cours.user.firstname + ' ' + model.cours.user.lastname,
+                start_hour: model.start_time.replace(':', 'h'),
+                end_hour: model.end_time.replace(':', 'h'),
+                date: new Date(model.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+                price: await this.calculateFullPrice(model),
+                url: process.env.FRONT_URL + '/slots/',
             },
         })
+
         return await model.save();
     }
 
@@ -119,5 +124,21 @@ export class SlotService {
         } else {
             return await SlotModel.find({paid: true}).sort({createdAt: 'desc'}).exec();
         }
+    }
+
+    async calculateFullPrice(slot: SlotDocument) {
+            const time_start = new Date();
+            const time_end = new Date();
+            const value_start = slot.start_time.split(':');
+            const value_end = slot.end_time.split(':');
+    
+            time_start.setHours(parseInt(value_start[0]), parseInt(value_start[1]));
+            time_end.setHours(parseInt(value_end[0]), parseInt(value_end[1]));
+    
+            let diff = (time_start.getTime() - time_end.getTime()) / 1000;
+            diff /= 60 * 60;
+            const price = Math.abs(diff) * slot.cours.price;
+    
+            return price.toFixed(2);
     }
 }
