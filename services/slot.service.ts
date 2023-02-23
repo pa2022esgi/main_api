@@ -1,6 +1,12 @@
 import {CoursDocument, SlotDocument, SlotModel, SlotProps, UserDocument} from "../models";
 import startOfDay from 'date-fns/startOfDay'
 
+const Sib = require('sib-api-v3-sdk')
+const client = Sib.ApiClient.instance
+const apiKey = client.authentications['api-key']
+apiKey.apiKey = process.env.SENDINBLUE_KEY
+
+
 export class SlotService {
     private static instance?:SlotService;
 
@@ -21,6 +27,31 @@ export class SlotService {
             online: props.online
         });
 
+        const client = new Sib.TransactionalEmailsApi()
+
+        const sender = {
+            email: process.env.SENDINBLUE_EMAIL,
+            name: process.env.SENDINBLUE_NAME,
+        }
+        const receivers = [
+            {
+                email: model.user.email,
+                name: model.user.firstname + ' ' + model.user.lastname,
+            },
+        ]
+        
+        client.sendTransacEmail({
+            sender,
+            to: receivers,
+            subject: 'Subscribe to Cules Coding to become a developer',
+            htmlContent: `
+            <h1>Cules Coding {{params.role}}</h1>
+            <a href="https://cules-coding.vercel.app/">Visit</a>
+                    `,
+            params: {
+                role: 'Frontend',
+            },
+        })
         return await model.save();
     }
 

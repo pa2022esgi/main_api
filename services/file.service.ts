@@ -2,7 +2,6 @@ import {FileModel, UserDocument} from "../models";
 import { PutObjectCommand, DeleteObjectCommand, S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const cloudinary = require("cloudinary");
 const fs = require('fs');
 require('dotenv').config()
 
@@ -15,11 +14,6 @@ const client = new S3Client({
 })
   
 const bucketName = process.env.STORAGE_BUCKET_NAME
-/*cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});*/
 
 export class FileService {
 
