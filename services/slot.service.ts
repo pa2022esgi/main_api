@@ -7,6 +7,7 @@ const client = Sib.ApiClient.instance
 const apiKey = client.authentications['api-key']
 apiKey.apiKey = process.env.SENDINBLUE_KEY
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export class SlotService {
     private static instance?:SlotService;
@@ -95,20 +96,17 @@ export class SlotService {
         return await SlotModel.findById(id).exec();
     }
 
-    async paySlot(slot: SlotDocument) {
-        let time_start = new Date();
-        let time_end = new Date();
-        let value_start = slot.start_time.split(':');
-        let value_end = slot.end_time.split(':');
+    async paySlot(slot: SlotDocument, token: string) {
+        const price = await this.calculateFullPrice(slot);
 
-        time_start.setHours(Number(value_start[0]), Number(value_start[1]));
-        time_end.setHours(Number(value_end[0]), Number(value_end[1]));
+        await stripe.charges.create({
+            amount: +price * 100,
+            currency: 'eur',
+            description: 'Slot id: ' + slot._id,
+            source: token,
+        });
 
-        let diff = (time_start.getTime() - time_end.getTime()) / 1000;
-        diff /= 60 * 60;
-        const price = Math.abs(diff) * slot.cours.price;
-
-        slot.price = Number(price.toFixed(2));
+        slot.price = parseInt(price);
         slot.paid = true;
         await slot.save();
     }
@@ -127,18 +125,18 @@ export class SlotService {
     }
 
     async calculateFullPrice(slot: SlotDocument) {
-            const time_start = new Date();
-            const time_end = new Date();
-            const value_start = slot.start_time.split(':');
-            const value_end = slot.end_time.split(':');
-    
-            time_start.setHours(parseInt(value_start[0]), parseInt(value_start[1]));
-            time_end.setHours(parseInt(value_end[0]), parseInt(value_end[1]));
-    
-            let diff = (time_start.getTime() - time_end.getTime()) / 1000;
-            diff /= 60 * 60;
-            const price = Math.abs(diff) * slot.cours.price;
-    
-            return price.toFixed(2);
+        const time_start = new Date();
+        const time_end = new Date();
+        const value_start = slot.start_time.split(':');
+        const value_end = slot.end_time.split(':');
+
+        time_start.setHours(parseInt(value_start[0]), parseInt(value_start[1]));
+        time_end.setHours(parseInt(value_end[0]), parseInt(value_end[1]));
+
+        let diff = (time_start.getTime() - time_end.getTime()) / 1000;
+        diff /= 60 * 60;
+        const price = Math.abs(diff) * slot.cours.price;
+
+        return price.toFixed(2);
     }
 }

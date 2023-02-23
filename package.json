@@ -32,6 +32,7 @@
     "mongoose": "^6.3.2",
     "mongoose-autopopulate": "^0.16.1",
     "sib-api-v3-sdk": "^8.5.0",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.5.1",
+    "stripe": "^11.11.0"
   }
 }

@@ -88,11 +88,11 @@ export class SlotController {
             const slot = await SlotService.getInstance().findOneById(req.params.id);
 
             if (!slot) {
-                res.status(400).end();
+                res.status(404).end();
                 return;
             }
 
-            await SlotService.getInstance().paySlot(slot);
+            await SlotService.getInstance().paySlot(slot, req.body.token);
 
             res.status(200).end();
         } catch (e) {
